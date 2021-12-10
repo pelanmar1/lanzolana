@@ -1,6 +1,5 @@
 import requests
 from bs4 import BeautifulSoup
-import csv
 import json 
 import pandas as pd
 from os.path import exists
@@ -31,8 +30,7 @@ def load_config():
         return default_config
     with open("config.json") as f:
         data = json.load(f)
-        return data
-
+        return data    
 
 # ===== WEB SCRAPPING ======
 def parse_coin(row):
@@ -85,15 +83,16 @@ def find_all_new_coins(old_data, new_data):
 # ===== DISCORD =====
 
 def send_discord_notification(message):
-    notifier = dn.Notifier(CONFIG["discordWebhookUrl"])
+    webhook_url = CONFIG["discordWebhookUrl"]
+    notifier = dn.Notifier(webhook_url)
+    print("Sending message to %s" % webhook_url)
     notifier.send(message, print_message=False)
 
 def coin_data_to_table(data):
     table = Texttable(0)
     output_rows = [["symbol", "price"]]
     for index, row in data.iterrows():
-        url = "https://www.coingecko.com/%s" % row["url"]
-        symbol = "[%s](%s)" % (row["symbol"], url)
+        symbol = "[%s](%s)" % (row["symbol"], row["url"])
         price = row["price"]
         output_rows.append([symbol, price])
     table.add_rows(output_rows)
@@ -102,8 +101,7 @@ def coin_data_to_table(data):
 def coin_data_to_list(data):
     output_string = "Nuevas monedas de Solana: \n"
     for index, row in data.iterrows():
-        url = "https://www.coingecko.com/%s" % row["url"]
-        symbol = "[%s](%s)" % (row["symbol"], url)
+        symbol = "[%s](%s)" % (row["symbol"], row["url"])
         output_string += "- %s \n" % symbol
     return output_string
 
