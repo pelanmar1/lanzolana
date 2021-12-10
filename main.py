@@ -102,7 +102,7 @@ def coin_data_to_table(data):
 def coin_data_to_list(data):
     output_string = "Nuevas monedas de Solana: \n"
     for index, row in data.iterrows():
-        url = "https://www.coingecko.com/%s" % ""
+        url = "https://www.coingecko.com/%s" % row["url"]
         symbol = "[%s](%s)" % (row["symbol"], url)
         output_string += "- %s \n" % symbol
     return output_string
